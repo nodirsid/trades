@@ -9,10 +9,16 @@ import java.util.Scanner;
 import java.util.Collections;
 import java.util.InputMismatchException;
 
+//this program reads a list of trades from a CSV file
+//and provides basic analytics on the trades
 public class Main {
 
     public static void main(String[] args) {
+
+        //scanner to read user input from command line
         Scanner sc = new Scanner(System.in);
+
+        //array of trade objects
         ArrayList<Trade> trades = new ArrayList<Trade>();
         int option=-1;
 
@@ -21,7 +27,7 @@ public class Main {
                     "1-Add trade\n2-Delete trade\n3-Totals by instrument\n" +
                     "4-Totals by User\n5-Print\n0-Exit");
             try{
-                option=sc.nextInt();
+                option=sc.nextInt(); //read input from scanner
             }catch (InputMismatchException ex){
                 System.out.println("Error: Please enter a valid option");
                 sc.nextLine();
@@ -31,23 +37,23 @@ public class Main {
 
             switch (option){
                 case 0:
-                    System.exit(0);
+                    System.exit(0); //exit the system
                     break;
                 case 1:
-                    trades = addTrade(sc);
+                    trades = addTrade(sc); //specify a file and load the trades into memory
                     System.out.println("All trades were successfully loaded into memory");
                     break;
                 case 2:
-                    deleteTrade(sc,trades);
+                    deleteTrade(sc,trades); //delete a trade from the in-memory list
                     break;
                 case 3:
-                    totalsByInstrument(trades);
+                    totalsByInstrument(trades); //output the total quantity that has been traded for each instrument
                     break;
                 case 4:
-                    totalsByUser(trades);
+                    totalsByUser(trades); //output the total consideration (quantity x by price) for each user
                     break;
                 case 5:
-                    printTradesInCSV(sc, trades);
+                    printTradesInCSV(sc, trades); //output the trades in CSV format
                     break;
                 default:
                     System.out.println("Error: Please enter a valid option");
@@ -56,6 +62,8 @@ public class Main {
         }
     }
 
+    //print the trades in CSV format
+    //input: scanner to read input from command line, list of trades
     private static void printTradesInCSV(Scanner sc, ArrayList<Trade> trades){
         if(trades.size() !=0) {
 
@@ -115,11 +123,10 @@ public class Main {
         }else{
             System.out.println("Error: Nothing to print. Memory contains to trades");
         }
-
-
-
     }
 
+    //output the total quantity that has been traded for each instrument
+    //input: list of trades
     private static void totalsByInstrument(ArrayList<Trade> trades){
         Map<String, Integer> ttlByInst=new HashMap<>();
         for(Trade tr: trades){
@@ -140,6 +147,9 @@ public class Main {
         }
     }
 
+
+    //output the total consideration (quantity x by price) for each user
+    //input: list of trades
     private static void totalsByUser(ArrayList<Trade> trades){
         Map<Integer, Double> ttlByUser=new HashMap<>();
         for(Trade tr: trades){
@@ -161,6 +171,8 @@ public class Main {
     }
 
 
+    //delete a trade from the in-memory list
+    //input: scanner to read input from command line, list of trades
     private static void deleteTrade(Scanner sc, ArrayList<Trade> trades){
 
         if(trades.size()!=0) {
@@ -196,6 +208,10 @@ public class Main {
         }
     }
 
+
+    //specify a file and load the trades into memory
+    //input: scanner to read input from command line
+    //output: list of trades loaded into memory
     private static ArrayList<Trade> addTrade(Scanner sc){
 
         System.out.println("Please enter full path to the file:");

@@ -1,6 +1,8 @@
 import java.util.Comparator;
 
 public class Trade {
+
+    //instance variables
     private int tradeID;
     private int userID;
     private String buyOrSell;
@@ -112,20 +114,6 @@ public class Trade {
             return 0;
         }
     };
-
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (getClass() != obj.getClass())
-//            return false;
-//        Trade other = (Trade) obj;
-//        if (tradeID != other.tradeID)
-//            return false;
-//        return true;
-//    }
 
     @Override
     public String toString() {
