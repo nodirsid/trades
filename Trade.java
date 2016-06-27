@@ -63,31 +63,6 @@ public class Trade {
     }
 
 
-    //setters
-    public void setTradeID(int tradeID) {
-        this.tradeID = tradeID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public void setBuyOrSell(String buyOrSell) {
-        this.buyOrSell = buyOrSell;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setInstrument(String instrument) {
-        this.instrument = instrument;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
     //comparator for sorting the list by trade id
     public static Comparator<Trade> tradeIdComparator = new Comparator<Trade>() {
 
@@ -138,19 +113,19 @@ public class Trade {
         }
     };
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Trade other = (Trade) obj;
-        if (tradeID != other.tradeID)
-            return false;
-        return true;
-    }
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (getClass() != obj.getClass())
+//            return false;
+//        Trade other = (Trade) obj;
+//        if (tradeID != other.tradeID)
+//            return false;
+//        return true;
+//    }
 
     @Override
     public String toString() {

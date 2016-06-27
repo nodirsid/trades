@@ -2,18 +2,24 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Collections;
+import java.util.InputMismatchException;
 
 public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         ArrayList<Trade> trades = new ArrayList<Trade>();
-        int option;
+        int option=-1;
 
         while(true){
-            System.out.println("Select the command:");
-            System.out.println("1-Add trade\n2-Delete trade\n3-Totals by instrument\n4-Totals by User\n5-Print\n6-Exit");
+            System.out.println("Select the command:\n" +
+                    "1-Add trade\n2-Delete trade\n3-Totals by instrument\n" +
+                    "4-Totals by User\n5-Print\n0-Exit");
             try{
                 option=sc.nextInt();
             }catch (InputMismatchException ex){
@@ -24,6 +30,9 @@ public class Main {
 
 
             switch (option){
+                case 0:
+                    System.exit(0);
+                    break;
                 case 1:
                     trades = addTrade(sc);
                     System.out.println("All trades were successfully loaded into memory");
@@ -40,9 +49,6 @@ public class Main {
                 case 5:
                     printTradesInCSV(sc, trades);
                     break;
-                case 6:
-                    System.exit(0);
-                    break;
                 default:
                     System.out.println("Error: Please enter a valid option");
                     break;
@@ -51,59 +57,63 @@ public class Main {
     }
 
     private static void printTradesInCSV(Scanner sc, ArrayList<Trade> trades){
-        System.out.println("Please choose sorting order:" +
-                "\n0-default\n1-order by trade id\n2-order by user id" +
-                "\n3-order by quantity\n4-order by price");
-        sc.nextLine();
-        int sortingType=0;
+        if(trades.size() !=0) {
 
-        try{
-            sortingType=sc.nextInt();
-
-            System.out.println("Trades in CSV format");
-            switch (sortingType){
-                case 0: //default order
-                    System.out.println("Default order");
-                    for(Trade tr: trades){
-                        System.out.println(tr);
-                    }
-                    break;
-                case 1: //order by trade id
-                    System.out.println("Ordered by trade id");
-                    Collections.sort(trades, Trade.tradeIdComparator);
-                    for(Trade tr: trades){
-                        System.out.println(tr);
-                    }
-                    break;
-                case 2:
-                    System.out.println("Ordered by user id");
-                    Collections.sort(trades, Trade.userIdComparator);
-                    for(Trade tr: trades){
-                        System.out.println(tr);
-                    }
-                    break;
-                case 3:
-                    System.out.println("Ordered by quantity");
-                    Collections.sort(trades, Trade.qtyComparator);
-                    for(Trade tr: trades){
-                        System.out.println(tr);
-                    }
-                    break;
-                case 4:
-                    System.out.println("Ordered by price");
-                    Collections.sort(trades, Trade.priceComparator);
-                    for(Trade tr: trades){
-                        System.out.println(tr);
-                    }
-                    break;
-                default:
-                    System.out.println("Error: Please enter a valid option");
-                    break;
-            }
-
-        }catch (InputMismatchException ex){
-            System.out.println("Sorting option can only be numeric");
+            System.out.println("Please choose sorting order:" +
+                    "\n0-default\n1-order by trade id\n2-order by user id" +
+                    "\n3-order by quantity\n4-order by price");
             sc.nextLine();
+            int sortingType = -1;
+
+            try {
+                sortingType = sc.nextInt();
+
+                switch (sortingType) {
+                    case 0: //default order
+                        System.out.println("Trades in CSV format\nDefault order");
+                        for (Trade tr : trades) {
+                            System.out.println(tr);
+                        }
+                        break;
+                    case 1: //order by trade id
+                        System.out.println("Trades in CSV format\nOrdered by trade id");
+                        Collections.sort(trades, Trade.tradeIdComparator);
+                        for (Trade tr : trades) {
+                            System.out.println(tr);
+                        }
+                        break;
+                    case 2:
+                        System.out.println("Trades in CSV format\nOrdered by user id");
+                        Collections.sort(trades, Trade.userIdComparator);
+                        for (Trade tr : trades) {
+                            System.out.println(tr);
+                        }
+                        break;
+                    case 3:
+                        System.out.println("Trades in CSV format\nOrdered by quantity");
+                        Collections.sort(trades, Trade.qtyComparator);
+                        for (Trade tr : trades) {
+                            System.out.println(tr);
+                        }
+                        break;
+                    case 4:
+                        System.out.println("Trades in CSV format\nOrdered by price");
+                        Collections.sort(trades, Trade.priceComparator);
+                        for (Trade tr : trades) {
+                            System.out.println(tr);
+                        }
+                        break;
+                    default:
+                        System.out.println("Error: Please enter a valid option for sorting");
+                        break;
+                }
+
+            } catch (InputMismatchException ex) {
+                System.out.println("Error: Sorting option can only be numeric");
+                sc.nextLine();
+            }
+        }else{
+            System.out.println("Error: Nothing to print. Memory contains to trades");
         }
 
 
@@ -131,58 +141,64 @@ public class Main {
     }
 
     private static void totalsByUser(ArrayList<Trade> trades){
-        Map<String, Double> ttlByUser=new HashMap<>();
+        Map<Integer, Double> ttlByUser=new HashMap<>();
         for(Trade tr: trades){
             if(ttlByUser.containsKey(tr.getUserID())){
                 Double ttlConsideration=ttlByUser.get(tr.getUserID());
                 ttlConsideration+=tr.getQuantity() * tr.getPrice();
-                ttlByUser.put(tr.getInstrument(),ttlConsideration);
+                ttlByUser.put(tr.getUserID(),ttlConsideration);
             }else{
                 Double ttlConsideration=tr.getQuantity() * tr.getPrice();
-                ttlByUser.put(tr.getInstrument(),ttlConsideration);
+                ttlByUser.put(tr.getUserID(),ttlConsideration);
             }
         }
 
         //output
         System.out.println("Totals by user");
-        for (Map.Entry<String, Double> entry : ttlByUser.entrySet()) {
+        for (Map.Entry<Integer, Double> entry : ttlByUser.entrySet()) {
             System.out.println(entry.getKey() + " "+entry.getValue());
         }
     }
 
 
     private static void deleteTrade(Scanner sc, ArrayList<Trade> trades){
-        System.out.println("Please enter the trade id to delete:");
-        sc.nextLine();
-        int tradeId=0;
-        try{
-            tradeId = sc.nextInt();
 
-            Trade trade=null;
+        if(trades.size()!=0) {
 
-            //iterate through trades
-            for(Trade tr: trades){
-                if(tr.getTradeID()==tradeId) {
-                    trade = tr;
-                    break;
-                }
-            }
-
-            if(trade != null) {
-                trades.remove(trade);
-                System.out.println("Trade with id " + tradeId + " was removed from memory");
-            }else{
-                System.out.println("Trade with id " + tradeId + " cannot be found in memory");
-            }
-        }catch (InputMismatchException ex){
-            System.out.println("Trade id can only be numeric");
+            System.out.println("Please enter the trade id to delete:");
             sc.nextLine();
+            int tradeId = 0;
+            try {
+                tradeId = sc.nextInt();
+
+                Trade trade = null;
+
+                //iterate through trades
+                for (Trade tr : trades) {
+                    if (tr.getTradeID() == tradeId) {
+                        trade = tr;
+                        break;
+                    }
+                }
+
+                if (trade != null) {
+                    trades.remove(trade);
+                    System.out.println("Trade with id " + tradeId + " was removed from memory");
+                } else {
+                    System.out.println("Error: Trade with id " + tradeId + " cannot be found in memory");
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Error: Trade id can only be numeric");
+                sc.nextLine();
+            }
+        }else{
+            System.out.println("Error: Nothing to delete. Memory contains no trades");
         }
     }
 
     private static ArrayList<Trade> addTrade(Scanner sc){
 
-        System.out.println("Please enter the file name:");
+        System.out.println("Please enter full path to the file:");
         sc.nextLine();
         String csvFile=sc.nextLine();
         BufferedReader br=null;
@@ -195,7 +211,7 @@ public class Main {
                 try{
                     br=new BufferedReader(new FileReader(csvFile));
                 }catch (FileNotFoundException ex){
-                    System.out.println("Please enter the file name:");
+                    System.out.println("Please enter full path to the file:");
                     csvFile=sc.nextLine();
                     continue;
                 }
@@ -220,12 +236,6 @@ public class Main {
 
         }catch (IOException e){
             e.printStackTrace();
-        }finally {
-            try {
-                br.close();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
         }
 
         return trades;
