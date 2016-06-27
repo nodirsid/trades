@@ -1,21 +1,22 @@
+import java.util.Comparator;
+
 /**
  * Created by Nodirjon on 6/21/2016.
  */
 public class Trade {
     private int tradeID;
     private int userID;
-    private String bs;
+    private String buyOrSell;
     private int quantity;
     private String instrument;
     private double price;
-    public enum BuyOrSell{B, S};
 
     //default constructor
     public Trade(){
         this.price = 0;
         this.instrument = "";
         this.quantity = 0;
-        this.bs = null;
+        this.buyOrSell = null;
         this.userID = 0;
         this.tradeID = 0;
     }
@@ -24,7 +25,7 @@ public class Trade {
     public Trade(
             int tradeID,
             int userID,
-            String bs,
+            String buyOrSell,
             int quantity,
             String instrument,
             double price
@@ -33,7 +34,7 @@ public class Trade {
         this.price = price;
         this.instrument = instrument;
         this.quantity = quantity;
-        this.bs = bs;
+        this.buyOrSell = buyOrSell;
         this.userID = userID;
         this.tradeID = tradeID;
     }
@@ -48,8 +49,8 @@ public class Trade {
         return userID;
     }
 
-    public String getBs() {
-        return bs;
+    public String getBuyOrSell() {
+        return buyOrSell;
     }
 
     public int getQuantity() {
@@ -74,8 +75,8 @@ public class Trade {
         this.userID = userID;
     }
 
-    public void setBs(String bs) {
-        this.bs = bs;
+    public void setBuyOrSell(String buyOrSell) {
+        this.buyOrSell = buyOrSell;
     }
 
     public void setQuantity(int quantity) {
@@ -90,6 +91,55 @@ public class Trade {
         this.price = price;
     }
 
+    //Comparator for sorting the list by trade id
+    public static Comparator<Trade> tradeIdComparator = new Comparator<Trade>() {
+
+        public int compare(Trade t1, Trade t2) {
+            int tradeId1 = t1.getTradeID();
+            int tradeId2 = t2.getTradeID();
+
+            //ascending order by default
+            return tradeId1 - tradeId2;
+        }
+    };
+
+    //Comparator for sorting the list by user id
+    public static Comparator<Trade> userIdComparator = new Comparator<Trade>() {
+
+        public int compare(Trade t1, Trade t2) {
+            int userId1 = t1.getUserID();
+            int userId2 = t2.getUserID();
+
+            //ascending order by default
+            return userId1 - userId2;
+        }
+    };
+
+    //Comparator for sorting the list by quantity
+    public static Comparator<Trade> qtyComparator = new Comparator<Trade>() {
+
+        public int compare(Trade t1, Trade t2) {
+            int qty1 = t1.getQuantity();
+            int qty2 = t2.getQuantity();
+
+            //ascending order by default
+            return qty1 - qty2;
+        }
+    };
+
+    //Comparator for sorting the list by price
+    public static Comparator<Trade> priceComparator = new Comparator<Trade>() {
+
+        public int compare(Trade t1, Trade t2) {
+            double price1 = t1.getPrice();
+            double price2 = t2.getPrice();
+
+            //ascending order by default
+            if(price1 < price2) return -1;
+            if(price1 > price2) return 1;
+            return 0;
+        }
+    };
 
     @Override
     public boolean equals(Object obj) {
@@ -103,5 +153,10 @@ public class Trade {
         if (tradeID != other.tradeID)
             return false;
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return getTradeID()+","+getUserID()+","+getBuyOrSell()+","+getQuantity()+","+getInstrument()+","+getPrice();
     }
 }
