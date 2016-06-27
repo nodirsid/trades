@@ -1,8 +1,5 @@
 import java.util.Comparator;
 
-/**
- * Created by Nodirjon on 6/21/2016.
- */
 public class Trade {
     private int tradeID;
     private int userID;
@@ -91,7 +88,7 @@ public class Trade {
         this.price = price;
     }
 
-    //Comparator for sorting the list by trade id
+    //comparator for sorting the list by trade id
     public static Comparator<Trade> tradeIdComparator = new Comparator<Trade>() {
 
         public int compare(Trade t1, Trade t2) {
@@ -103,7 +100,7 @@ public class Trade {
         }
     };
 
-    //Comparator for sorting the list by user id
+    //comparator for sorting the list by user id
     public static Comparator<Trade> userIdComparator = new Comparator<Trade>() {
 
         public int compare(Trade t1, Trade t2) {
@@ -115,7 +112,7 @@ public class Trade {
         }
     };
 
-    //Comparator for sorting the list by quantity
+    //comparator for sorting the list by quantity
     public static Comparator<Trade> qtyComparator = new Comparator<Trade>() {
 
         public int compare(Trade t1, Trade t2) {
@@ -127,7 +124,7 @@ public class Trade {
         }
     };
 
-    //Comparator for sorting the list by price
+    //comparator for sorting the list by price
     public static Comparator<Trade> priceComparator = new Comparator<Trade>() {
 
         public int compare(Trade t1, Trade t2) {
