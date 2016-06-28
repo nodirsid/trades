@@ -1,13 +1,11 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Collections;
 import java.util.InputMismatchException;
+import java.nio.file.Files;
 
 //this program reads a list of trades from a CSV file
 //and provides basic analytics on the trades
@@ -128,22 +126,27 @@ public class Main {
     //output the total quantity that has been traded for each instrument
     //input: list of trades
     private static void totalsByInstrument(ArrayList<Trade> trades){
-        Map<String, Integer> ttlByInst=new HashMap<>();
-        for(Trade tr: trades){
-            if(ttlByInst.containsKey(tr.getInstrument())){
-                Integer qty=ttlByInst.get(tr.getInstrument());
-                qty+=tr.getQuantity();
-                ttlByInst.put(tr.getInstrument(),qty);
-            }else{
-                Integer qty=tr.getQuantity();
-                ttlByInst.put(tr.getInstrument(),qty);
-            }
-        }
+        if(trades.size() !=0) {
 
-        //output
-        System.out.println("Totals by instrument");
-        for (Map.Entry<String, Integer> entry : ttlByInst.entrySet()) {
-            System.out.println(entry.getKey() + " "+entry.getValue());
+            Map<String, Integer> ttlByInst = new HashMap<>();
+            for (Trade tr : trades) {
+                if (ttlByInst.containsKey(tr.getInstrument())) {
+                    Integer qty = ttlByInst.get(tr.getInstrument());
+                    qty += tr.getQuantity();
+                    ttlByInst.put(tr.getInstrument(), qty);
+                } else {
+                    Integer qty = tr.getQuantity();
+                    ttlByInst.put(tr.getInstrument(), qty);
+                }
+            }
+
+            //output
+            System.out.println("Totals by instrument");
+            for (Map.Entry<String, Integer> entry : ttlByInst.entrySet()) {
+                System.out.println(entry.getKey() + " " + entry.getValue());
+            }
+        }else{
+            System.out.println("Error: Memory contains no trades");
         }
     }
 
@@ -151,22 +154,27 @@ public class Main {
     //output the total consideration (quantity x by price) for each user
     //input: list of trades
     private static void totalsByUser(ArrayList<Trade> trades){
-        Map<Integer, Double> ttlByUser=new HashMap<>();
-        for(Trade tr: trades){
-            if(ttlByUser.containsKey(tr.getUserID())){
-                Double ttlConsideration=ttlByUser.get(tr.getUserID());
-                ttlConsideration+=tr.getQuantity() * tr.getPrice();
-                ttlByUser.put(tr.getUserID(),ttlConsideration);
-            }else{
-                Double ttlConsideration=tr.getQuantity() * tr.getPrice();
-                ttlByUser.put(tr.getUserID(),ttlConsideration);
-            }
-        }
+        if(trades.size() != 0) {
 
-        //output
-        System.out.println("Totals by user");
-        for (Map.Entry<Integer, Double> entry : ttlByUser.entrySet()) {
-            System.out.println(entry.getKey() + " "+entry.getValue());
+            Map<Integer, Double> ttlByUser = new HashMap<>();
+            for (Trade tr : trades) {
+                if (ttlByUser.containsKey(tr.getUserID())) {
+                    Double ttlConsideration = ttlByUser.get(tr.getUserID());
+                    ttlConsideration += tr.getQuantity() * tr.getPrice();
+                    ttlByUser.put(tr.getUserID(), ttlConsideration);
+                } else {
+                    Double ttlConsideration = tr.getQuantity() * tr.getPrice();
+                    ttlByUser.put(tr.getUserID(), ttlConsideration);
+                }
+            }
+
+            //output
+            System.out.println("Totals by user");
+            for (Map.Entry<Integer, Double> entry : ttlByUser.entrySet()) {
+                System.out.println(entry.getKey() + " " + entry.getValue());
+            }
+        }else{
+            System.out.println("Error: Memory contains no trades");
         }
     }
 
@@ -214,21 +222,46 @@ public class Main {
     //output: list of trades loaded into memory
     private static ArrayList<Trade> addTrade(Scanner sc){
 
-        System.out.println("Please enter full path to the file:");
+        System.out.println("Please enter full path to CSV file.");
         sc.nextLine();
-        String csvFile=sc.nextLine();
+        String csvFileName=sc.nextLine();
+        File csvFile=null;
         BufferedReader br=null;
         String line=null;
+        String fileType = "undetermined";
         ArrayList<Trade> trades=new ArrayList<Trade>();
 
         try{
+
             while(br==null){
 
                 try{
+                    csvFile=new File(csvFileName);
+                    fileType = Files.probeContentType(csvFile.toPath());
+
+                    if(fileType !=null &&
+                            !fileType.equals("text/csv") &&
+                            !fileType.equals("application/vnd.ms-excel") &&
+                            !fileType.equals("text/comma-separated-values") &&
+                            !fileType.equals("application/csv") &&
+                            !fileType.equals("application/excel") &&
+                            !fileType.equals("application/vnd.msexcel") &&
+                            !fileType.equals("text/anytext")){
+
+                        System.out.println("Error: Not a CSV file. Please enter full path to CSV file");
+                        csvFileName=sc.nextLine();
+                        continue;
+                    }
+
                     br=new BufferedReader(new FileReader(csvFile));
+
                 }catch (FileNotFoundException ex){
-                    System.out.println("Please enter full path to the file:");
-                    csvFile=sc.nextLine();
+                    System.out.println("Error: File is not found. Please enter full path to CSV file");
+                    csvFileName=sc.nextLine();
+                    continue;
+                }catch (IOException ioException){
+                    System.out.println("Error: Unable to determine file type");
+                    csvFileName=sc.nextLine();
                     continue;
                 }
 
