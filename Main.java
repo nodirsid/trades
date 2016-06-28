@@ -1,4 +1,9 @@
-import java.io.*;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -154,6 +159,7 @@ public class Main {
     //output the total consideration (quantity x by price) for each user
     //input: list of trades
     private static void totalsByUser(ArrayList<Trade> trades){
+        DecimalFormat df = new DecimalFormat(".##");
         if(trades.size() != 0) {
 
             Map<Integer, Double> ttlByUser = new HashMap<>();
@@ -171,7 +177,7 @@ public class Main {
             //output
             System.out.println("Totals by user");
             for (Map.Entry<Integer, Double> entry : ttlByUser.entrySet()) {
-                System.out.println(entry.getKey() + " " + entry.getValue());
+                System.out.println(entry.getKey() + " " + df.format(entry.getValue()));
             }
         }else{
             System.out.println("Error: Memory contains no trades");
