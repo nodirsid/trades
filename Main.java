@@ -239,6 +239,7 @@ public class Main {
                     csvFile=new File(csvFileName);
                     fileType = Files.probeContentType(csvFile.toPath());
 
+                    //check if file is CSV files
                     if(fileType !=null &&
                             !fileType.equals("text/csv") &&
                             !fileType.equals("application/vnd.ms-excel") &&
